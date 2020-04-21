@@ -13,17 +13,22 @@ Currently supported
 
 ### **HttpDir** mode
 
+Used to find http paths that return success http status codes `200`-`299`
+
+
 ### Basic usage:
 
-```
-fuzz httpdir http://example.com
-```
-
-`-w` default is [common.txt](https://github.com/digination/dirbuster-ng/blob/master/wordlists/common.txt).
-
-`--default-ext` will use [extensions_common.txt](https://github.com/digination/dirbuster-ng/blob/master/wordlists/extensions_common.txt).
+| Command | Description |
+| --------|------------|
+|``` fuzz httpdir http://example.com ```| Use [default word list](https://github.com/digination/dirbuster-ng/blob/master/wordlists/common.txt) and no extentions |
+| ```fuzz httpdir http://example.com -f --ignore-code 403 404``` | Log all requests except `403` and `404` status codes|
+| ```fuzz httpdir http://example.com -x txt php``` | Append `.txt` and `.php` to each request (as well as the base word)|
 
 
+
+
+
+Using `--default-ext` will add [extensions_common.txt](https://github.com/digination/dirbuster-ng/blob/master/wordlists/extensions_common.txt) to the extentions.
 
 ### Full usage:
 
