@@ -13,7 +13,7 @@ Currently supported
 
 ```
 USAGE:
-    rscan.exe httpdir [FLAGS] [OPTIONS] <TARGET>
+    fuzz.exe httpdir [FLAGS] [OPTIONS] <TARGET>
 
 ARGS:
     <TARGET>
