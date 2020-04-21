@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 tokio = {version="0.2.18", features=["fs", "io-util", "io-std", "sync", "time"] }
 reqwest = { version = "0.10", features=["gzip", "cookies"] }
-clap = "*"
+clap = { git = "https://github.com/clap-rs/clap/" }
 log = "0.4"
 fern = { version = "0.6.0", features = ["colored"] }
 chrono = "0.4.11"

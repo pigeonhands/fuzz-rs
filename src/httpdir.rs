@@ -12,17 +12,39 @@ use tokio::sync::{mpsc, Mutex};
 use tokio::task;
 use tokio::time::timeout;
 
-pub struct HttpDirConfig<'a> {
-    pub common: CommonArgs<'a>,
+
+use clap::Clap;
+
+#[derive(Clap)]
+pub struct HttpDirConfig {
+    #[clap(name = "TARGET", parse(try_from_str))]
     pub target: reqwest::Url,
+
+    #[clap(short = "g", long = "gzip")]
     pub gzip: bool,
-    pub timeout: Option<&'a str>,
-    pub username: Option<&'a str>,
-    pub password: Option<&'a str>,
-    pub user_agent: Option<&'a str>,
+
+    #[clap(long = "timeout")]
+    pub timeout: Option<i32>,
+
+    #[clap(short="u", long = "username")]
+    pub username: Option<String>,
+
+    #[clap(short="P", long = "password")]
+    pub password: Option<String>,
+
+    #[clap(long = "agent")]
+    pub user_agent: Option<String>,
+
+    #[clap(short="e", long = "expand-url")]
     pub expand_url_log: bool,
-    pub extentions: Option<Vec<&'a str>>,
-    pub ignore_codes: Option<Vec<&'a str>>,
+
+    #[clap(short="x", long = "extentions")]
+    pub extentions: Option<Vec<String>>,
+
+    #[clap(long = "ignore-code")]
+    pub ignore_codes: Option<Vec<String>>,
+
+    #[clap(short="f", long = "print-fails")]
     pub print_fails: bool,
 }
 
@@ -123,20 +145,21 @@ impl Worker {
 
 
 
-pub struct HttpDirScanner<'a> {
-    cfg: HttpDirConfig<'a>,
+pub struct HttpDirScanner {
+    common_args: CommonArgs,
+    cfg: HttpDirConfig,
     client: reqwest::Client,
     extentions: Vec<String>,
     ignore_codes: Vec<u16>,
 }
 
-impl<'a> HttpDirScanner<'a> {
-    pub async fn run_new(cfg: HttpDirConfig<'a>) -> Result<(), Box<dyn std::error::Error>> {
-        let mut s = Self::new(cfg)?;
+impl HttpDirScanner {
+    pub async fn run_new(common_args: CommonArgs, cfg: HttpDirConfig) -> Result<(), Box<dyn std::error::Error>> {
+        let mut s = Self::new(common_args, cfg)?;
         s.run().await
     }
 
-    pub fn new(cfg: HttpDirConfig<'a>) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn new(common_args: CommonArgs, cfg: HttpDirConfig) -> Result<Self, Box<dyn std::error::Error>> {
         let extentions = match &cfg.extentions {
             Some(e) => e.clone(),
             None => vec![], //"php", "css", "js", "sql", "aspx", "asp", "txt", "php"
@@ -161,24 +184,25 @@ impl<'a> HttpDirScanner<'a> {
             Vec::new()
         };
 
-        Ok(HttpDirScanner::<'a> {
+        Ok(HttpDirScanner {
             client: Self::make_http_client(&cfg)?,
             extentions: extentions,
             ignore_codes: ignore_codes,
             cfg: cfg,
+            common_args: common_args,
         })
     }
 
     pub async fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         info!("Starting httpdir scan...");
 
-        let threads = if self.cfg.common.threads < 1 {
+        let threads = if self.common_args.threads < 1 {
             1
         } else {
-            self.cfg.common.threads
+            self.common_args.threads
         } as usize;
 
-        let mut word_list = utils::get_word_list(&self.cfg.common.word_list).await?;
+        let mut word_list = utils::get_word_list(&self.common_args.word_list).await?;
 
         info!("Word list: {}", &word_list.source);
         info!("Threads: {}", threads);
@@ -215,8 +239,8 @@ impl<'a> HttpDirScanner<'a> {
                 }
                 line.clear();
 
-                if self.cfg.common.delay > 0 {
-                    tokio::time::delay_for(Duration::from_millis(self.cfg.common.delay as u64))
+                if self.common_args.delay > 0 {
+                    tokio::time::delay_for(Duration::from_millis(self.common_args.delay as u64))
                         .await;
                 }
             }
@@ -249,7 +273,7 @@ impl<'a> HttpDirScanner<'a> {
     }
 
     fn make_http_client(
-        cfg: &HttpDirConfig<'a>,
+        cfg: &HttpDirConfig,
     ) -> Result<reqwest::Client, Box<dyn std::error::Error>> {
         let mut headers = header::HeaderMap::new();
         if let Some(username) = cfg.username {

@@ -8,8 +8,8 @@ pub struct WordList {
     pub source: String,
     pub buff: Box<dyn io::AsyncBufRead + Unpin>,
 }
-pub async fn get_word_list(name: &Option<&str>) -> io::Result<WordList> {
-    let word_list_src = name.ok_or(io::Error::new(
+pub async fn get_word_list(name: &Option<String>) -> io::Result<WordList> {
+    let word_list_src = name.as_ref().ok_or(io::Error::new(
         io::ErrorKind::InvalidInput,
         "No word list specified.",
     ))?;
