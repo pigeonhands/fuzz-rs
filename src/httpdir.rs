@@ -1,6 +1,7 @@
 use crate::utils;
 use crate::CommonArgs;
 use base64::write::EncoderWriter as Base64Encoder;
+use clap::Clap;
 use log::{debug, error, info, trace, warn};
 use reqwest;
 use reqwest::{header, redirect};
@@ -12,8 +13,6 @@ use tokio::sync::{mpsc, Mutex};
 use tokio::task;
 use tokio::time::timeout;
 
-use clap::{Clap};
-
 #[derive(Clap, Clone)]
 pub struct HttpDirConfig {
     #[clap(name = "TARGET", parse(try_from_str))]
@@ -24,7 +23,7 @@ pub struct HttpDirConfig {
     pub gzip: bool,
 
     /// Http timeout in ms.
-    #[clap(long = "timeout", default_value="0")]
+    #[clap(long = "timeout", default_value = "0")]
     pub timeout: i32,
 
     /// Basic auth username.

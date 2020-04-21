@@ -8,7 +8,7 @@ use log;
 use log::error;
 use tokio::runtime::Runtime;
 
-use clap::{Clap};
+use clap::Clap;
 
 #[derive(Clap, Clone)]
 #[clap(version = "1.0", author = "Sam M.")]
@@ -82,9 +82,7 @@ fn run_app() -> Result<(), Box<dyn std::error::Error>> {
 
     let common_args = args.clone();
     let app_run = match args.subcmd {
-        Subcommand::HttpDir(http_cfg) => {
-            httpdir::HttpDirScanner::run_new(common_args, http_cfg)
-        },
+        Subcommand::HttpDir(http_cfg) => httpdir::HttpDirScanner::run_new(common_args, http_cfg),
     };
 
     let mut rt = Runtime::new()?;
