@@ -69,17 +69,17 @@ fn run_app() -> Result<(), Box<dyn std::error::Error>> {
     if !args.silent {
         fern_logger = fern_logger.chain(std::io::stdout());
     }
-    if let Some(log_file) = args.out_file {
+    if let Some(log_file) = &args.out_file {
         fern_logger = fern_logger.chain(fern::log_file(log_file)?);
     }
     fern_logger.apply().expect("Failed to initilize logging!");
 
+    let common_args = args.clone();
     let app_run = match args.subcmd {
-        Subcommand::HttpDir(mut http_cfg) => {
-            httpdir::HttpDirScanner::run_new(args.clone(), http_cfg)
+        Subcommand::HttpDir(http_cfg) => {
+            httpdir::HttpDirScanner::run_new(common_args, http_cfg)
         },
-        _ => Err(std::io::Error::from(std::io::ErrorKind::InvalidInput)),
-    }?;
+    };
 
     let mut rt = Runtime::new()?;
     rt.block_on(app_run)

@@ -278,10 +278,10 @@ impl HttpDirScanner {
         cfg: &HttpDirConfig,
     ) -> Result<reqwest::Client, Box<dyn std::error::Error>> {
         let mut headers = header::HeaderMap::new();
-        if let Some(username) = cfg.username {
+        if let Some(username) = &cfg.username {
             headers.append(
                 header::AUTHORIZATION,
-                Self::create_auth_header(username, cfg.password)?,
+                Self::create_auth_header(username, cfg.password.as_ref())?,
             );
         }
 
@@ -305,7 +305,7 @@ impl HttpDirScanner {
             builder = builder.timeout(Duration::from_millis(cfg.timeout as u64));
         }
 
-        if let Some(user_agent) = cfg.user_agent {
+        if let Some(user_agent) = &cfg.user_agent {
             builder = builder.user_agent(user_agent);
         }
         let client = builder.build()?;

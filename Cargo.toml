@@ -3,6 +3,11 @@ name = "rscan"
 version = "0.1.0"
 authors = ["samma"]
 edition = "2018"
+license="MIT"
+readme="README.md"
+repository="https://github.com/pigeonhands/tte"
+description="Time to execute. Application benchmark/timer."
+keywords = ["benchmark", "timer", "execution"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
