@@ -12,10 +12,9 @@ use tokio::sync::{mpsc, Mutex};
 use tokio::task;
 use tokio::time::timeout;
 
-
 use clap::Clap;
 
-#[derive(Clap)]
+#[derive(Clap, Clone)]
 pub struct HttpDirConfig {
     #[clap(name = "TARGET", parse(try_from_str))]
     pub target: reqwest::Url,
@@ -23,28 +22,28 @@ pub struct HttpDirConfig {
     #[clap(short = "g", long = "gzip")]
     pub gzip: bool,
 
-    #[clap(long = "timeout")]
-    pub timeout: Option<i32>,
+    #[clap(long = "timeout", default_value="0")]
+    pub timeout: i32,
 
-    #[clap(short="u", long = "username")]
+    #[clap(short = "u", long = "username")]
     pub username: Option<String>,
 
-    #[clap(short="P", long = "password")]
+    #[clap(short = "P", long = "password")]
     pub password: Option<String>,
 
     #[clap(long = "agent")]
     pub user_agent: Option<String>,
 
-    #[clap(short="e", long = "expand-url")]
+    #[clap(short = "e", long = "expand-url")]
     pub expand_url_log: bool,
 
-    #[clap(short="x", long = "extentions")]
+    #[clap(short = "x", long = "extentions")]
     pub extentions: Option<Vec<String>>,
 
     #[clap(long = "ignore-code")]
     pub ignore_codes: Option<Vec<String>>,
 
-    #[clap(short="f", long = "print-fails")]
+    #[clap(short = "f", long = "print-fails")]
     pub print_fails: bool,
 }
 
@@ -57,7 +56,6 @@ pub struct WorkerConfig {
     expand_url_log: bool,
     print_fails: bool,
 }
-
 
 pub struct Worker {
     id: i32,
@@ -143,8 +141,6 @@ impl Worker {
     }
 }
 
-
-
 pub struct HttpDirScanner {
     common_args: CommonArgs,
     cfg: HttpDirConfig,
@@ -154,12 +150,18 @@ pub struct HttpDirScanner {
 }
 
 impl HttpDirScanner {
-    pub async fn run_new(common_args: CommonArgs, cfg: HttpDirConfig) -> Result<(), Box<dyn std::error::Error>> {
+    pub async fn run_new(
+        common_args: CommonArgs,
+        cfg: HttpDirConfig,
+    ) -> Result<(), Box<dyn std::error::Error>> {
         let mut s = Self::new(common_args, cfg)?;
         s.run().await
     }
 
-    pub fn new(common_args: CommonArgs, cfg: HttpDirConfig) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn new(
+        common_args: CommonArgs,
+        cfg: HttpDirConfig,
+    ) -> Result<Self, Box<dyn std::error::Error>> {
         let extentions = match &cfg.extentions {
             Some(e) => e.clone(),
             None => vec![], //"php", "css", "js", "sql", "aspx", "asp", "txt", "php"
@@ -299,8 +301,8 @@ impl HttpDirScanner {
             .default_headers(headers)
             .redirect(redirect_rule);
 
-        if let Some(timeout) = cfg.timeout {
-            builder = builder.timeout(Duration::from_millis(timeout.parse()?));
+        if cfg.timeout > 0 {
+            builder = builder.timeout(Duration::from_millis(cfg.timeout as u64));
         }
 
         if let Some(user_agent) = cfg.user_agent {

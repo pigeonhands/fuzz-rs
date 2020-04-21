@@ -10,34 +10,36 @@ use tokio::runtime::Runtime;
 
 use clap::Clap;
 
-#[derive(Clap)]
+#[derive(Clap, Clone)]
 #[clap(version = "1.0", author = "Sam M.")]
 pub struct CommonArgs {
-    #[clap(short = "o", long = "out-file", global=true)]
+    #[clap(short = "o", long = "out-file", global = true)]
     pub out_file: Option<String>,
 
-    #[clap(short = "w", long = "word-list", global=true)]
+    #[clap(short = "w", long = "word-list", global = true)]
     pub word_list: Option<String>,
 
-    #[clap(short = "t", long = "threads", global=true, default_value="10")]
+    #[clap(short = "t", long = "threads", global = true, default_value = "10")]
     pub threads: u16,
 
-    #[clap(short = "d", long = "delay", global=true, default_value="0")]
+    #[clap(short = "d", long = "delay", global = true, default_value = "0")]
     pub delay: i32,
 
-    #[clap(long = "silent", global=true, default_value=false)]
+    #[clap(long = "silent", global = true)]
     pub silent: bool,
+
+    #[clap(short = "v", long = "verbose", parse(from_occurrences))]
+    verbose: i32,
 
     #[clap(subcommand)]
     subcmd: Subcommand,
 }
 
-#[derive(Clap)]
-pub enum Subcommand{
+#[derive(Clap, Clone)]
+pub enum Subcommand {
     #[clap(name = "httpdir", version = "1.0")]
     HttpDir(httpdir::HttpDirConfig),
 }
-
 
 fn run_app() -> Result<(), Box<dyn std::error::Error>> {
     let args = CommonArgs::parse();
@@ -46,6 +48,12 @@ fn run_app() -> Result<(), Box<dyn std::error::Error>> {
         .info(Color::Green)
         .warn(Color::BrightYellow)
         .error(Color::BrightRed);
+
+    let log_level = match args.verbose {
+        1 => log::LevelFilter::Debug,
+        2 => log::LevelFilter::Trace,
+        _ => log::LevelFilter::Info,
+    };
 
     let mut fern_logger = fern::Dispatch::new()
         .format(move |out, message, record| {
@@ -68,7 +76,7 @@ fn run_app() -> Result<(), Box<dyn std::error::Error>> {
 
     let app_run = match args.subcmd {
         Subcommand::HttpDir(mut http_cfg) => {
-            httpdir::HttpDirScanner::run_new(matches.clone(), http_cfg)
+            httpdir::HttpDirScanner::run_new(args.clone(), http_cfg)
         },
         _ => Err(std::io::Error::from(std::io::ErrorKind::InvalidInput)),
     }?;
