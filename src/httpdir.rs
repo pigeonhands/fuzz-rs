@@ -12,7 +12,7 @@ use tokio::sync::{mpsc, Mutex};
 use tokio::task;
 use tokio::time::timeout;
 
-use clap::Clap;
+use clap::{Clap};
 
 #[derive(Clap, Clone)]
 pub struct HttpDirConfig {

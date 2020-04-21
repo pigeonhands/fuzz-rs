@@ -8,7 +8,7 @@ use log;
 use log::error;
 use tokio::runtime::Runtime;
 
-use clap::Clap;
+use clap::{Clap};
 
 #[derive(Clap, Clone)]
 #[clap(version = "1.0", author = "Sam M.")]
