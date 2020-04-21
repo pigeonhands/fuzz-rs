@@ -1,7 +1,7 @@
 [package]
 name = "fuzz"
 version = "0.1.0"
-authors = ["samma"]
+authors = ["Sam M."]
 edition = "2018"
 license="MIT"
 readme="README.md"
