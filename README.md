@@ -1,5 +1,12 @@
 # fuzz-rs
 
+[![](https://img.shields.io/crates/v/fuzz?style=for-the-badge)](https://crates.io/crates/fuzz)
+
+```
+cargo install fuzz
+```
+
+
 fuzz is a bruteforce/fuzzing tool written in rust to be working right away.
 
 __Requires rust `nightly` to build__
