@@ -13,21 +13,27 @@ use clap::Clap;
 #[derive(Clap, Clone)]
 #[clap(version = "1.0", author = "Sam M.")]
 pub struct CommonArgs {
+    /// Save output to specified file.
     #[clap(short = "o", long = "out-file", global = true)]
     pub out_file: Option<String>,
 
+    /// Input work list used to fuzz.
     #[clap(short = "w", long = "word-list", global = true)]
     pub word_list: Option<String>,
 
+    /// Number of threads to use for fuzzing.
     #[clap(short = "t", long = "threads", global = true, default_value = "10")]
     pub threads: u16,
 
+    /// Minimum delay between word processing.
     #[clap(short = "d", long = "delay", global = true, default_value = "0")]
     pub delay: i32,
 
+    /// Disable console output.
     #[clap(long = "silent", global = true)]
     pub silent: bool,
 
+    /// Verbose level. e.g. -vvv
     #[clap(short = "v", long = "verbose", parse(from_occurrences))]
     verbose: i32,
 

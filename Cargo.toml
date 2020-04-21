@@ -1,13 +1,13 @@
 [package]
-name = "rscan"
+name = "fuzz"
 version = "0.1.0"
 authors = ["samma"]
 edition = "2018"
 license="MIT"
 readme="README.md"
-repository="https://github.com/pigeonhands/tte"
-description="Time to execute. Application benchmark/timer."
-keywords = ["benchmark", "timer", "execution"]
+repository="https://github.com/pigeonhands/fuzz-rs"
+description="Rust fuzzer/buster."
+keywords = ["buster", "pentesting", "web", "tool"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -19,7 +19,3 @@ log = "0.4"
 fern = { version = "0.6.0", features = ["colored"] }
 chrono = "0.4.11"
 base64 = "0.12.0"
-toml = "0.5.6"
-serde = "1.0.106"
-async-trait = "0.1.30"
-
