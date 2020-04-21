@@ -1,6 +1,8 @@
-# bust-rs
+# fuzz-rs
 
-bust is a bruteforce/fuzzing tool written in rust.
+fuzz is a bruteforce/fuzzing tool written in rust to be working right away.
+
+__Requires rust `nightly` to build__
 
 Currently supported
 
@@ -11,6 +13,20 @@ Currently supported
 
 ### **HttpDir** mode
 
+### Basic usage:
+
+```
+fuzz httpdir http://example.com
+```
+
+`-w` default is [common.txt](https://github.com/digination/dirbuster-ng/blob/master/wordlists/common.txt).
+
+`--default-ext` will use [extensions_common.txt](https://github.com/digination/dirbuster-ng/blob/master/wordlists/extensions_common.txt).
+
+
+
+### Full usage:
+
 ```
 USAGE:
     fuzz.exe httpdir [FLAGS] [OPTIONS] <TARGET>
@@ -19,6 +35,7 @@ ARGS:
     <TARGET>
 
 FLAGS:
+        --default-ext    Use default extention list (adds to -x if any)
     -e, --expand-url     Show full url (rather than /<word>)
     -g, --gzip           Compresss requests qith gzip
     -h, --help           Prints help information
@@ -37,5 +54,6 @@ OPTIONS:
         --agent <user-agent>               Request user agent
     -u, --username <username>              Basic auth username
     -w, --word-list <word-list>            Input work list used to fuzz
+
 ```
 

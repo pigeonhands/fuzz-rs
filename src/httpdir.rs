@@ -46,6 +46,10 @@ pub struct HttpDirConfig {
     #[clap(short = "x", long = "extentions")]
     pub extentions: Option<Vec<String>>,
 
+    /// Use default extention list (adds to -x if any)
+    #[clap(long = "--default-ext")]
+    pub default_extentions: bool,
+
     /// List of status codes to ignore.
     #[clap(long = "ignore-code")]
     pub ignore_codes: Option<Vec<String>>,
@@ -170,19 +174,7 @@ impl HttpDirScanner {
         common_args: CommonArgs,
         cfg: HttpDirConfig,
     ) -> Result<Self, Box<dyn std::error::Error>> {
-        let extentions = match &cfg.extentions {
-            Some(e) => e.clone(),
-            None => vec![], //"php", "css", "js", "sql", "aspx", "asp", "txt", "php"
-        }
-        .iter()
-        .map(|s| {
-            let mut new_str = String::from(s.trim());
-            if !new_str.starts_with(".") {
-                new_str.insert(0, '.');
-            }
-            new_str
-        })
-        .collect();
+        let extentions = utils::get_extention_list(&cfg.extentions, cfg.default_extentions);
 
         let ignore_codes = if let Some(ignore) = &cfg.ignore_codes {
             ignore

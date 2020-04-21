@@ -1,6 +1,6 @@
 [package]
 name = "fuzz"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Sam M."]
 edition = "2018"
 license="MIT"
@@ -12,10 +12,10 @@ keywords = ["buster", "pentesting", "web", "tool"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio = {version="0.2.18", features=["fs", "io-util", "io-std", "sync", "time"] }
+tokio = {version="0.2.18", features=["fs", "io-util", "io-std", "sync", "time", "stream"] }
 reqwest = { version = "0.10", features=["gzip", "cookies"] }
 clap = { package = "clap-v3", version = "3.0.0-beta.1" } 
 log = "0.4"
-fern = { version = "0.6.0", features = ["colored"] }
+fern = { version = "0.6.0"}
 chrono = "0.4.11"
 base64 = "0.12.0"

@@ -3,7 +3,6 @@ mod utils;
 
 use chrono;
 use fern;
-use fern::colors::{Color, ColoredLevelConfig};
 use log;
 use log::error;
 use tokio::runtime::Runtime;
@@ -50,11 +49,6 @@ pub enum Subcommand {
 fn run_app() -> Result<(), Box<dyn std::error::Error>> {
     let args = CommonArgs::parse();
 
-    let colors = ColoredLevelConfig::new()
-        .info(Color::Green)
-        .warn(Color::BrightYellow)
-        .error(Color::BrightRed);
-
     let log_level = match args.verbose {
         1 => log::LevelFilter::Debug,
         2 => log::LevelFilter::Trace,
@@ -66,7 +60,7 @@ fn run_app() -> Result<(), Box<dyn std::error::Error>> {
             out.finish(format_args!(
                 "{}[{}] {}",
                 chrono::Local::now().format("[%H:%M:%S]"),
-                colors.color(record.level()),
+                record.level(),
                 message
             ))
         })
